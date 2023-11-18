@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -62,6 +64,14 @@ public class Review {
     public static class ReviewPK implements Serializable {
         private Long storeId;
         private Long userId;
+    }
+
+    public List<Short> getHashtagIdList() {
+        return Arrays.asList(
+                this.hashtag1Id,
+                this.hashtag2Id,
+                this.hashtag3Id
+        );
     }
 
 }
