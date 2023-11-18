@@ -59,7 +59,7 @@ public class Review {
 
     @Data
     @NoArgsConstructor
-    public class ReviewPK implements Serializable {
+    public static class ReviewPK implements Serializable {
         private Long storeId;
         private Long userId;
     }
