@@ -1,7 +1,6 @@
 package com.example.cloudproject.reviewapiserver.controller;
 
-import com.example.cloudproject.reviewapiserver.dto.StoreReviewRequestDTO;
-import com.example.cloudproject.reviewapiserver.dto.StoreReviewResponseDTO;
+import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
 import com.example.cloudproject.reviewapiserver.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +18,12 @@ public class ReviewController {
     }
 
     @GetMapping("/{storeId}")
-    public ResponseEntity<StoreReviewResponseDTO> getStoreReviews(@PathVariable Long storeId,
-                                                                  @ModelAttribute StoreReviewRequestDTO storeReviewRequestDTO) {
+    public ResponseEntity<StoreReviewDTO.Response> getStoreReviews(@PathVariable Long storeId,
+                                                                  @ModelAttribute StoreReviewDTO.Request requestDTO) {
 
-        storeReviewRequestDTO.setStoreId(storeId);
+        requestDTO.setStoreId(storeId);
 
-        StoreReviewResponseDTO responseDTO = reviewService.getStoreReviews(storeReviewRequestDTO);
+        StoreReviewDTO.Response responseDTO = reviewService.getStoreReviews(requestDTO);
 
         return ResponseEntity.ok(responseDTO);
     }

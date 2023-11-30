@@ -1,8 +1,6 @@
 package com.example.cloudproject.reviewapiserver.service;
 
 import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
-import com.example.cloudproject.reviewapiserver.dto.StoreReviewRequestDTO;
-import com.example.cloudproject.reviewapiserver.dto.StoreReviewResponseDTO;
 import com.example.cloudproject.reviewapiserver.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,20 +19,20 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    public StoreReviewResponseDTO getStoreReviews(StoreReviewRequestDTO storeReviewRequestDTO) {
+    public StoreReviewDTO.Response getStoreReviews(StoreReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
-                storeReviewRequestDTO.getPage(),
-                storeReviewRequestDTO.getRow(),
+                requestDTO.getPage(),
+                requestDTO.getRow(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
 
-        Page<StoreReviewDTO> page = reviewRepository
-                .findAllByStoreIdAndIsHiddenFalse(storeReviewRequestDTO.getStoreId(), pageable)
-                .map(StoreReviewDTO::from);
+        Page<StoreReviewDTO.Info> page = reviewRepository
+                .findAllByStoreIdAndIsHiddenFalse(requestDTO.getStoreId(), pageable)
+                .map(StoreReviewDTO.Info::from);
 
-        return StoreReviewResponseDTO.builder()
-                .page(storeReviewRequestDTO.getPage())
-                .row(storeReviewRequestDTO.getRow())
+        return StoreReviewDTO.Response.builder()
+                .page(requestDTO.getPage())
+                .row(requestDTO.getRow())
                 .reviews(page.getContent())
                 .build();
     }
