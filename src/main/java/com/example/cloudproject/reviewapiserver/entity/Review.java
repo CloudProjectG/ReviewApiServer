@@ -46,6 +46,12 @@ public class Review {
     @Column(name = "hasgtag3_id", nullable = false)
     private Short hashtag3Id;
 
+    @Transient
+    private Boolean doChangeImage;
+
+    @Transient
+    private Boolean doUploadImage;
+
     @Column(name = "image_uuid", unique = true)
     private UUID imageUuid;
 
