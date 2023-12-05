@@ -60,7 +60,10 @@ public class Review {
     private Timestamp createdAt;
 
     @Data
+    @Builder
+    @EqualsAndHashCode
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class ReviewPK implements Serializable {
         private Long storeId;
         private Long userId;
@@ -72,6 +75,13 @@ public class Review {
                 this.hashtag2Id,
                 this.hashtag3Id
         );
+    }
+
+    public ReviewPK getPK() {
+        return ReviewPK.builder()
+                .storeId(storeId)
+                .userId(userId)
+                .build();
     }
 
 }
