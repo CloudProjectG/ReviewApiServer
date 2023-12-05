@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -17,10 +18,16 @@ public class WebClientUtil {
 
     private final WebClient webClient;
 
-    public Long getUserIdFromToken(@Value("${network.user-auth}") String hostname,
-                                   String token) {
+    @Value("${network.user-auth}")
+    private String userAuthHostname;
+
+    @Value("${network.store}")
+    private String storeHostname;
+
+
+    public UserDTO.AuthorizedResponse getUserIdFromToken(String token) {
         return webClient.mutate()
-                .baseUrl("http://" + hostname + "/login")
+                .baseUrl("http://" + userAuthHostname + "/login")
                 .defaultHeaders(headers -> headers.setBearerAuth(token))
                 .build()
                 .post()
@@ -28,17 +35,15 @@ public class WebClientUtil {
                     if (response.statusCode() == HttpStatus.OK) {
                         return response.bodyToMono(UserDTO.AuthorizedResponse.class);
                     } else {
-                        throw new AuthException(AuthExceptionType.UNAUTHORIZED_TOKEN);
+                        return null;
                     }
                 })
-                .block()
-                .getId();
+                .block();
     }
 
-    public void patchHashtagAndAverageGradeToStore(@Value("${network.store}") String hostname,
-                                                   ReviewDTO.UpdateHashtagAndGradeRequest requestDTO) {
+    public void patchHashtagAndAverageGradeToStore(ReviewDTO.UpdateHashtagAndGradeRequest requestDTO) {
         webClient.mutate()
-                .baseUrl("http://" + hostname + "/store/" + requestDTO.getStoreId() + "/hashtag-and-grade")
+                .baseUrl("http://" + storeHostname + "/store/" + requestDTO.getStoreId() + "/hashtag-and-grade")
                 .build()
                 .patch()
                 .contentType(MediaType.APPLICATION_JSON)
