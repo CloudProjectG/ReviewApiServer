@@ -64,4 +64,21 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.updateReview(requestDTO));
     }
 
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<ReviewDTO.RemoveResponse> removeReview(@PathVariable("storeId") Long storeId,
+                                                                 HttpServletRequest servletRequest) {
+
+        Long userId = (Long) servletRequest.getAttribute("userId");
+        if (userId == -1) {
+            throw new AuthException(AuthExceptionType.UNAUTHORIZED_TOKEN);
+        }
+
+        ReviewDTO.RemoveRequest requestDTO = ReviewDTO.RemoveRequest.builder()
+                .storeId(storeId)
+                .userId(userId)
+                .build();
+
+        return ResponseEntity.ok(reviewService.removeReview(requestDTO));
+    }
+
 }
