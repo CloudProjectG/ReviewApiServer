@@ -1,1 +1,4 @@
+network:
+  user-auth: ${USER_AUTH_HOSTNAME}
+  store: ${STORE_HOSTNAME}
 
