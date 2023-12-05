@@ -1,8 +1,13 @@
 package com.example.cloudproject.reviewapiserver.service;
 
+import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
+import com.example.cloudproject.reviewapiserver.entity.Review;
+import com.example.cloudproject.reviewapiserver.exception.ReviewException;
+import com.example.cloudproject.reviewapiserver.exception.type.ReviewExceptionType;
 import com.example.cloudproject.reviewapiserver.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,14 +15,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-
-    @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
-        this.reviewRepository = reviewRepository;
-    }
 
     public StoreReviewDTO.Response getStoreReviews(StoreReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
@@ -35,6 +36,23 @@ public class ReviewService {
                 .row(requestDTO.getRow())
                 .reviews(page.getContent())
                 .build();
+    }
+
+    public ReviewDTO.CreateResponse createReview(ReviewDTO.CreateRequest requestDTO) {
+
+        Review review = requestDTO.toEntity();
+
+        if (reviewRepository.existsById(review.getPK())) {
+            throw new ReviewException(ReviewExceptionType.ONLY_ONE_REVIEW_PER_STORE);
+        }
+
+        try {
+            reviewRepository.saveAndFlush(review);
+        } catch (DataAccessException e) {
+            throw new ReviewException(ReviewExceptionType.REVIEW_SAVE_FAILURE);
+        }
+
+        return ReviewDTO.CreateResponse.from(review);
     }
 
 }
