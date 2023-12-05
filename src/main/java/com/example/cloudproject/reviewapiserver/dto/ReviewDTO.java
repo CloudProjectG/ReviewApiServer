@@ -36,7 +36,10 @@ public class ReviewDTO {
                     .hashtag1Id(hashtags.get(0))
                     .hashtag2Id(hashtags.get(1))
                     .hashtag3Id(hashtags.get(2))
-                    .imageUuid(doUploadImage ? UUID.randomUUID() : null)
+                    .doUploadImage(doUploadImage)
+                    .imageUuid(doUploadImage
+                            ? UUID.randomUUID()
+                            : null)
                     .isHidden(isHidden)
                     .isAnonymous(isAnonymous)
                     .build();
@@ -53,7 +56,63 @@ public class ReviewDTO {
 
         public static CreateResponse from(Review review) {
             return CreateResponse.builder()
-                    .doUploadImage(review.getImageUuid() != null)
+                    .doUploadImage(review.getDoUploadImage())
+                    .imageUuid(review.getImageUuid())
+                    .build();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class UpdateRequest {
+        private Long storeId;
+        private Long userId;
+        private String menu;
+        private Byte grade;
+        private String comment;
+        private List<Short> hashtags;
+        private Boolean doChangeImage;
+        private Boolean doUploadImage;
+        private Boolean isHidden;
+        private Boolean isAnonymous;
+
+        public Review toEntity() {
+            return Review.builder()
+                    .storeId(storeId)
+                    .userId(userId)
+                    .menu(menu)
+                    .grade(grade)
+                    .comment(comment)
+                    .hashtag1Id(hashtags.get(0))
+                    .hashtag2Id(hashtags.get(1))
+                    .hashtag3Id(hashtags.get(2))
+                    .doChangeImage(doChangeImage)
+                    .doUploadImage(doUploadImage)
+                    .imageUuid(doUploadImage
+                            ? UUID.randomUUID()
+                            : null)
+                    .isHidden(isHidden)
+                    .isAnonymous(isAnonymous)
+                    .build();
+        }
+
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class UpdateResponse {
+        private Boolean doChangeImage;
+        private Boolean doUploadImage;
+        private UUID imageUuid;
+
+        public static UpdateResponse from(Review review) {
+            return UpdateResponse.builder()
+                    .doChangeImage(review.getDoChangeImage())
+                    .doUploadImage(review.getDoUploadImage())
                     .imageUuid(review.getImageUuid())
                     .build();
         }
