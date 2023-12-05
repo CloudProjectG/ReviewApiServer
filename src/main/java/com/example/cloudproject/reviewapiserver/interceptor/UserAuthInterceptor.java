@@ -29,18 +29,12 @@ public class UserAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if (request.getMethod().equalsIgnoreCase("GET")
-                && !pathMatcher.match("/review/mine", requestURI)) {
-            return true;
-        }
-
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (token != null && token.startsWith("Bearer")) {
             token = token.substring(7);
         }
 
         UserDTO.AuthorizedResponse authResponse;
-
 
         if (token == null || (authResponse = webClientUtil.getUserIdFromToken(token)) == null) {
             request.setAttribute("userId", -1L);
