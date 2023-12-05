@@ -122,6 +122,27 @@ public class ReviewDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+    public static class RemoveRequest {
+        private Long storeId;
+        private Long userId;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class RemoveResponse {
+
+        public static RemoveResponse from(Review review) {
+            return RemoveResponse.builder()
+                    .build();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class UpdateHashtagAndGradeRequest {
 
         private Long storeId;
