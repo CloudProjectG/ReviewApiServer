@@ -2,16 +2,14 @@ package com.example.cloudproject.reviewapiserver.interceptor;
 
 import com.example.cloudproject.reviewapiserver.dto.UserDTO;
 import com.example.cloudproject.reviewapiserver.util.WebClientUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -21,9 +19,9 @@ public class UserAuthInterceptor implements HandlerInterceptor {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) throws ServletException, IOException {
+    public boolean preHandle(@NonNull HttpServletRequest request,
+                             @NonNull HttpServletResponse response,
+                             @NonNull Object handler) {
 
         String requestURI = request.getRequestURI();
 
