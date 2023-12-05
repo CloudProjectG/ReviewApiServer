@@ -75,4 +75,22 @@ public class ReviewService {
         return ReviewDTO.UpdateResponse.from(review);
     }
 
+    public ReviewDTO.RemoveResponse removeReview(ReviewDTO.RemoveRequest requestDTO) {
+        Review.ReviewPK reviewPK = Review.ReviewPK.builder()
+                .storeId(requestDTO.getStoreId())
+                .userId(requestDTO.getUserId())
+                .build();
+
+        Review review = reviewRepository.findById(reviewPK)
+                        .orElseThrow(() -> new ReviewException(ReviewExceptionType.REVIEW_NOT_FOUND));
+
+        reviewRepository.deleteById(reviewPK);
+
+        if (review.getImageUuid() != null) {
+            //image delete action
+        }
+
+        return ReviewDTO.RemoveResponse.from(review);
+    }
+
 }
