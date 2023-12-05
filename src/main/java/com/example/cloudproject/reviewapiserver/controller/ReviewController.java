@@ -32,7 +32,7 @@ public class ReviewController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("{storeId}")
+    @PostMapping("/{storeId}")
     public ResponseEntity<ReviewDTO.CreateResponse> postReview(@PathVariable("storeId") Long storeId,
                                                                @ModelAttribute ReviewDTO.CreateRequest requestDTO,
                                                                HttpServletRequest servletRequest) {
@@ -46,6 +46,22 @@ public class ReviewController {
         requestDTO.setUserId(userId);
 
         return ResponseEntity.ok(reviewService.createReview(requestDTO));
+    }
+
+    @PatchMapping("/{storeId}")
+    public ResponseEntity<ReviewDTO.UpdateResponse> updateReview(@PathVariable("storeId") Long storeId,
+                                                                 @ModelAttribute ReviewDTO.UpdateRequest requestDTO,
+                                                                 HttpServletRequest servletRequest) {
+
+        Long userId = (Long) servletRequest.getAttribute("userId");
+        if (userId == -1) {
+            throw new AuthException(AuthExceptionType.UNAUTHORIZED_TOKEN);
+        }
+
+        requestDTO.setStoreId(storeId);
+        requestDTO.setUserId(userId);
+
+        return ResponseEntity.ok(reviewService.updateReview(requestDTO));
     }
 
 }
