@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -39,7 +41,6 @@ public class ReviewService {
     }
 
     public ReviewDTO.CreateResponse createReview(ReviewDTO.CreateRequest requestDTO) {
-
         Review review = requestDTO.toEntity();
 
         if (reviewRepository.existsById(review.getPK())) {
@@ -48,11 +49,30 @@ public class ReviewService {
 
         try {
             reviewRepository.saveAndFlush(review);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException dae) {
             throw new ReviewException(ReviewExceptionType.REVIEW_SAVE_FAILURE);
         }
 
         return ReviewDTO.CreateResponse.from(review);
+    }
+
+    public ReviewDTO.UpdateResponse updateReview(ReviewDTO.UpdateRequest requestDTO) {
+        Review review = requestDTO.toEntity();
+        Review.ReviewPK reviewPK = review.getPK();
+
+        UUID beforeImageUuid = reviewRepository.getReferenceById(reviewPK).getImageUuid();
+
+        try {
+            reviewRepository.saveAndFlush(review);
+        } catch (DataAccessException dae) {
+            throw new ReviewException(ReviewExceptionType.REVIEW_SAVE_FAILURE);
+        }
+
+        if (requestDTO.getDoChangeImage()) {
+            //image delete action
+        }
+
+        return ReviewDTO.UpdateResponse.from(review);
     }
 
 }
