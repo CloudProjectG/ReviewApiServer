@@ -10,8 +10,8 @@ public enum AuthExceptionType implements BaseExceptionType {
     UNAUTHORIZED_TOKEN("A001", HttpStatus.UNAUTHORIZED, "인증에 실패했습니다.")
     ;
 
-    private String errorCode;
-    private HttpStatus httpStatus;
-    private String message;
+    private final String errorCode;
+    private final HttpStatus httpStatus;
+    private final String message;
 
 }
