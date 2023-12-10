@@ -38,13 +38,13 @@ public class Review {
     private String comment;
 
     @Column(name = "hasgtag1_id", nullable = false)
-    private Short hashtag1Id;
+    private Integer hashtag1Id;
 
     @Column(name = "hasgtag2_id", nullable = false)
-    private Short hashtag2Id;
+    private Integer hashtag2Id;
 
     @Column(name = "hasgtag3_id", nullable = false)
-    private Short hashtag3Id;
+    private Integer hashtag3Id;
 
     @Transient
     private Boolean doChangeImage;
@@ -75,7 +75,7 @@ public class Review {
         private Long userId;
     }
 
-    public List<Short> getHashtagIdList() {
+    public List<Integer> getHashtagIdList() {
         return Arrays.asList(
                 this.hashtag1Id,
                 this.hashtag2Id,
