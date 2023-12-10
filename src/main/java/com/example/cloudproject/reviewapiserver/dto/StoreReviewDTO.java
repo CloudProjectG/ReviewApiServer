@@ -18,7 +18,7 @@ public class StoreReviewDTO {
         private UUID imageUuid;
         private String menu;
         private String comment;
-        private List<Short> hashtags;
+        private List<Integer> hashtags;
 
         public static Info from(Review review) {
             return Info.builder()

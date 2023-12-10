@@ -20,7 +20,7 @@ public class MyReviewDTO {
         private UUID image;
         private String menu;
         private String comment;
-        private List<Short> hashtags;
+        private List<Integer> hashtags;
         private Boolean isHidden;
         private Boolean isAnonymous;
 
