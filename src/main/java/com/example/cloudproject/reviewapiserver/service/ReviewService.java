@@ -61,6 +61,8 @@ public class ReviewService {
             throw new ReviewException(ReviewExceptionType.REVIEW_SAVE_FAILURE);
         }
 
+        updateTop3HashtagAndAverageGrade(requestDTO.getStoreId());
+
         return ReviewDTO.CreateResponse.from(review);
     }
 
@@ -80,6 +82,8 @@ public class ReviewService {
             imageService.deleteImage(beforeImageUuid);
         }
 
+        updateTop3HashtagAndAverageGrade(requestDTO.getStoreId());
+
         return ReviewDTO.UpdateResponse.from(review);
     }
 
@@ -97,6 +101,8 @@ public class ReviewService {
         if (review.getImageUuid() != null) {
             imageService.deleteImage(review.getImageUuid());
         }
+
+        updateTop3HashtagAndAverageGrade(requestDTO.getStoreId());
 
         return ReviewDTO.RemoveResponse.from(review);
     }
@@ -132,6 +138,35 @@ public class ReviewService {
                 .page(requestDTO.getPage())
                 .reviews(myReviewList)
                 .build();
+    }
+    private void updateTop3HashtagAndAverageGrade(Long storeId) {
+        List<Review> reviewList = reviewRepository.findAllByStoreId(storeId);
+
+        List<Integer> top3HashtagList = reviewList.stream()
+                .flatMap(review -> review.getHashtagIdList().stream())
+                .collect(Collectors.groupingBy(hashtag -> hashtag, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
+                .limit(3)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        Byte averageGrade = reviewList.stream()
+                .map(Review::getGrade)
+                .collect(Collectors.averagingInt(grade -> grade))
+                .byteValue();
+
+        ReviewDTO.HashtagAndGradeInfo infoDTO = ReviewDTO.HashtagAndGradeInfo.builder()
+                .hashtags(top3HashtagList)
+                .grade(averageGrade)
+                .build();
+
+        ReviewDTO.UpdateHashtagAndGradeRequest requestDTO = ReviewDTO.UpdateHashtagAndGradeRequest.builder()
+                .storeId(storeId)
+                .info(infoDTO)
+                .build();
+
+        webClientUtil.patchHashtagAndAverageGradeToStore(requestDTO);
     }
 
 }
