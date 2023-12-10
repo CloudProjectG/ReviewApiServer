@@ -129,7 +129,6 @@ public class ReviewDTO {
 
     @Data
     @NoArgsConstructor
-    @AllArgsConstructor
     @Builder
     public static class RemoveResponse {
 
