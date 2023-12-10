@@ -1,5 +1,6 @@
 package com.example.cloudproject.reviewapiserver.controller;
 
+import com.example.cloudproject.reviewapiserver.dto.MyReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
 import com.example.cloudproject.reviewapiserver.exception.AuthException;
@@ -79,6 +80,20 @@ public class ReviewController {
                 .build();
 
         return ResponseEntity.ok(reviewService.removeReview(requestDTO));
+    }
+
+    @GetMapping("/mine")
+    public ResponseEntity<MyReviewDTO.Response> getMyReviews(@ModelAttribute MyReviewDTO.Request requestDTO,
+                                                             HttpServletRequest servletRequest) {
+
+        Long userId = (Long) servletRequest.getAttribute("userId");
+        if (userId == -1) {
+            throw new AuthException(AuthExceptionType.UNAUTHORIZED_TOKEN);
+        }
+
+        requestDTO.setUserId(userId);
+
+        return ResponseEntity.ok(reviewService.getMyReviews(requestDTO));
     }
 
 }
