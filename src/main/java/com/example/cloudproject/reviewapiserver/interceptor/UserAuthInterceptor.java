@@ -25,7 +25,8 @@ public class UserAuthInterceptor implements HandlerInterceptor {
 
         String requestURI = request.getRequestURI();
 
-        if (!pathMatcher.match("/review/*", requestURI)) {
+        if (!pathMatcher.match("/review/*", requestURI)
+                && !pathMatcher.match("/review/image/*", requestURI)) {
             return false;
         }
 
