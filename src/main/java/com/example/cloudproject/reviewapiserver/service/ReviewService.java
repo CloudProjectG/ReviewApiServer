@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ImageService imageService;
 
     public StoreReviewDTO.Response getStoreReviews(StoreReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
@@ -69,7 +70,7 @@ public class ReviewService {
         }
 
         if (requestDTO.getDoChangeImage()) {
-            //image delete action
+            imageService.deleteImage(beforeImageUuid);
         }
 
         return ReviewDTO.UpdateResponse.from(review);
@@ -87,7 +88,7 @@ public class ReviewService {
         reviewRepository.deleteById(reviewPK);
 
         if (review.getImageUuid() != null) {
-            //image delete action
+            imageService.deleteImage(review.getImageUuid());
         }
 
         return ReviewDTO.RemoveResponse.from(review);
