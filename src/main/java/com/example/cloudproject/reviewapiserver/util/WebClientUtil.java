@@ -1,6 +1,7 @@
 package com.example.cloudproject.reviewapiserver.util;
 
 import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
+import com.example.cloudproject.reviewapiserver.dto.StoreNameDTO;
 import com.example.cloudproject.reviewapiserver.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -48,5 +51,15 @@ public class WebClientUtil {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .subscribe();
+    }
+
+    public StoreNameDTO.Response getStoreNameList(StoreNameDTO.Request requestDTO) {
+        return webClient.mutate()
+                .baseUrl("http://" + storeHostname + "/store/name?" + requestDTO.getQuery())
+                .build()
+                .get()
+                .retrieve()
+                .bodyToMono(StoreNameDTO.Response.class)
+                .block();
     }
 }
