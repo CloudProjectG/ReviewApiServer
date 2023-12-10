@@ -1,11 +1,14 @@
 package com.example.cloudproject.reviewapiserver.service;
 
+import com.example.cloudproject.reviewapiserver.dto.MyReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
+import com.example.cloudproject.reviewapiserver.dto.StoreNameDTO;
 import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
 import com.example.cloudproject.reviewapiserver.entity.Review;
 import com.example.cloudproject.reviewapiserver.exception.ReviewException;
 import com.example.cloudproject.reviewapiserver.exception.type.ReviewExceptionType;
 import com.example.cloudproject.reviewapiserver.repository.ReviewRepository;
+import com.example.cloudproject.reviewapiserver.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -14,7 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +28,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ImageService imageService;
+    private final WebClientUtil webClientUtil;
 
     public StoreReviewDTO.Response getStoreReviews(StoreReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
@@ -92,6 +99,39 @@ public class ReviewService {
         }
 
         return ReviewDTO.RemoveResponse.from(review);
+    }
+
+    public MyReviewDTO.Response getMyReviews(MyReviewDTO.Request requestDTO) {
+        Pageable pageable = PageRequest.of(
+                requestDTO.getPage(),
+                requestDTO.getRow(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        List<Review> reviewList = reviewRepository.findAllByUserId(requestDTO.getUserId(), pageable)
+                .getContent();
+
+        List<Long> storeIdList = reviewList.stream()
+                .map(Review::getStoreId)
+                .toList();
+
+        StoreNameDTO.Request storeRequestDTO = StoreNameDTO.Request.builder()
+                .storeIdList(storeIdList)
+                .build();
+
+        Map<Long, String> storeIdNameMap = webClientUtil.getStoreNameList(storeRequestDTO)
+                .getResult().stream()
+                .collect(Collectors.toMap(StoreNameDTO.Info::getId, StoreNameDTO.Info::getName));
+
+        List<MyReviewDTO.Info> myReviewList = reviewList.stream()
+                .map(review -> MyReviewDTO.Info.from(review, storeIdNameMap.get(review.getStoreId())))
+                .toList();
+
+        return MyReviewDTO.Response.builder()
+                .row(requestDTO.getRow())
+                .page(requestDTO.getPage())
+                .reviews(myReviewList)
+                .build();
     }
 
 }
