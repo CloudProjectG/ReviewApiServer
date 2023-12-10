@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -113,7 +112,7 @@ public class ReviewService {
                 .getContent();
 
         List<Long> storeIdList = reviewList.stream()
-                .map(review -> review.getStoreId())
+                .map(Review::getStoreId)
                 .toList();
 
         StoreNameDTO.Request storeRequestDTO = StoreNameDTO.Request.builder()
