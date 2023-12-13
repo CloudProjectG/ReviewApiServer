@@ -1,9 +1,6 @@
 package com.example.cloudproject.reviewapiserver.service;
 
-import com.example.cloudproject.reviewapiserver.dto.MyReviewDTO;
-import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
-import com.example.cloudproject.reviewapiserver.dto.StoreNameDTO;
-import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
+import com.example.cloudproject.reviewapiserver.dto.*;
 import com.example.cloudproject.reviewapiserver.entity.Review;
 import com.example.cloudproject.reviewapiserver.exception.ReviewException;
 import com.example.cloudproject.reviewapiserver.exception.type.ReviewExceptionType;
@@ -17,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -121,13 +119,7 @@ public class ReviewService {
                 .map(Review::getStoreId)
                 .toList();
 
-        StoreNameDTO.Request storeRequestDTO = StoreNameDTO.Request.builder()
-                .storeIdList(storeIdList)
-                .build();
-
-        Map<Long, String> storeIdNameMap = webClientUtil.getStoreNameList(storeRequestDTO)
-                .getResult().stream()
-                .collect(Collectors.toMap(StoreNameDTO.Info::getId, StoreNameDTO.Info::getName));
+        Map<Long, String> storeIdNameMap = getStoreIdNameMap(storeIdList);
 
         List<MyReviewDTO.Info> myReviewList = reviewList.stream()
                 .map(review -> MyReviewDTO.Info.from(review, storeIdNameMap.get(review.getStoreId())))
@@ -137,6 +129,33 @@ public class ReviewService {
                 .row(requestDTO.getRow())
                 .page(requestDTO.getPage())
                 .reviews(myReviewList)
+                .build();
+    }
+
+    public RecentReviewDTO.Response getRecentReview(RecentReviewDTO.Request requestDTO) {
+        Pageable pageable = PageRequest.of(
+                requestDTO.getPage(),
+                requestDTO.getRow(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        List<Review> reviewList = reviewRepository.findAll(pageable)
+                .getContent();
+
+        List<Long> storeIdList = reviewList.stream()
+                .map(Review::getStoreId)
+                .toList();
+
+        Map<Long, String> storeIdNameMap = getStoreIdNameMap(storeIdList);
+
+        List<RecentReviewDTO.Info> recentReviewList = reviewList.stream()
+                .map(review -> RecentReviewDTO.Info.from(review, storeIdNameMap.get(review.getStoreId())))
+                .toList();
+
+        return RecentReviewDTO.Response.builder()
+                .row(requestDTO.getRow())
+                .page(requestDTO.getPage())
+                .reviews(recentReviewList)
                 .build();
     }
     private void updateTop3HashtagAndAverageGrade(Long storeId) {
@@ -167,6 +186,20 @@ public class ReviewService {
                 .build();
 
         webClientUtil.patchHashtagAndAverageGradeToStore(requestDTO);
+    }
+
+    private Map<Long, String> getStoreIdNameMap(List<Long> storeIdList) {
+        if (storeIdList.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        StoreNameDTO.Request storeRequestDTO = StoreNameDTO.Request.builder()
+                .storeIdList(storeIdList)
+                .build();
+
+        return webClientUtil.getStoreNameList(storeRequestDTO)
+                .getResult().stream()
+                .collect(Collectors.toMap(StoreNameDTO.Info::getId, StoreNameDTO.Info::getName));
     }
 
 }
