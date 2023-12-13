@@ -21,7 +21,7 @@ public class ReviewDTO {
         private String menu;
         private Byte grade;
         private String comment;
-        private List<Short> hashtags;
+        private List<Integer> hashtags;
         private Boolean doUploadImage;
         private Boolean isHidden;
         private Boolean isAnonymous;
@@ -72,7 +72,7 @@ public class ReviewDTO {
         private String menu;
         private Byte grade;
         private String comment;
-        private List<Short> hashtags;
+        private List<Integer> hashtags;
         private Boolean doChangeImage;
         private Boolean doUploadImage;
         private Boolean isHidden;
