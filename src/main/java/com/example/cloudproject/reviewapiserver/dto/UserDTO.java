@@ -6,6 +6,7 @@ public class UserDTO {
 
     @Getter
     public static class AuthorizedResponse {
-        private Long id;
+        private Long PK;
+        private Boolean isKhu;
     }
 }
