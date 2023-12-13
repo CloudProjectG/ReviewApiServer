@@ -1,6 +1,7 @@
 package com.example.cloudproject.reviewapiserver.controller;
 
 import com.example.cloudproject.reviewapiserver.dto.MyReviewDTO;
+import com.example.cloudproject.reviewapiserver.dto.RecentReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.ReviewDTO;
 import com.example.cloudproject.reviewapiserver.dto.StoreReviewDTO;
 import com.example.cloudproject.reviewapiserver.exception.AuthException;
@@ -24,7 +25,7 @@ public class ReviewController {
 
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreReviewDTO.Response> getStoreReviews(@PathVariable("storeId") Long storeId,
-                                                                  @ModelAttribute StoreReviewDTO.Request requestDTO) {
+                                                                   @ModelAttribute StoreReviewDTO.Request requestDTO) {
 
         requestDTO.setStoreId(storeId);
 
@@ -94,6 +95,11 @@ public class ReviewController {
         requestDTO.setUserId(userId);
 
         return ResponseEntity.ok(reviewService.getMyReviews(requestDTO));
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<RecentReviewDTO.Response> getRecentReviews(@ModelAttribute RecentReviewDTO.Request requestDTO) {
+        return ResponseEntity.ok(reviewService.getRecentReview(requestDTO));
     }
 
 }
