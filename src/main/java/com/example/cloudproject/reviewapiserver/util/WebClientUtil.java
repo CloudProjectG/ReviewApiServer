@@ -25,7 +25,7 @@ public class WebClientUtil {
 
     public UserDTO.AuthorizedResponse getUserIdFromToken(String token) {
         return webClient.mutate()
-                .baseUrl("http://" + userAuthHostname + "/login")
+                .baseUrl("http://" + userAuthHostname + "/authorization")
                 .defaultHeaders(headers -> headers.setBearerAuth(token))
                 .build()
                 .post()
