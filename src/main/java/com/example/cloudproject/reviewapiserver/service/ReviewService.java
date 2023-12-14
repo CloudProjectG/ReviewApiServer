@@ -40,8 +40,7 @@ public class ReviewService {
                 .map(StoreReviewDTO.Info::from);
 
         return StoreReviewDTO.Response.builder()
-                .page(requestDTO.getPage())
-                .row(requestDTO.getRow())
+                .pageInfo(PageDTO.from(page))
                 .reviews(page.getContent())
                 .build();
     }
@@ -112,8 +111,9 @@ public class ReviewService {
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
 
-        List<Review> reviewList = reviewRepository.findAllByUserId(requestDTO.getUserId(), pageable)
-                .getContent();
+        Page<Review> page = reviewRepository.findAllByUserId(requestDTO.getUserId(), pageable);
+
+        List<Review> reviewList = page.getContent();
 
         List<Long> storeIdList = reviewList.stream()
                 .map(Review::getStoreId)
@@ -126,8 +126,7 @@ public class ReviewService {
                 .toList();
 
         return MyReviewDTO.Response.builder()
-                .row(requestDTO.getRow())
-                .page(requestDTO.getPage())
+                .pageInfo(PageDTO.from(page))
                 .reviews(myReviewList)
                 .build();
     }
@@ -139,8 +138,9 @@ public class ReviewService {
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
 
-        List<Review> reviewList = reviewRepository.findAll(pageable)
-                .getContent();
+        Page<Review> page = reviewRepository.findAll(pageable);
+
+        List<Review> reviewList = page.getContent();
 
         List<Long> storeIdList = reviewList.stream()
                 .map(Review::getStoreId)
@@ -153,8 +153,7 @@ public class ReviewService {
                 .toList();
 
         return RecentReviewDTO.Response.builder()
-                .row(requestDTO.getRow())
-                .page(requestDTO.getPage())
+                .pageInfo(PageDTO.from(page))
                 .reviews(recentReviewList)
                 .build();
     }

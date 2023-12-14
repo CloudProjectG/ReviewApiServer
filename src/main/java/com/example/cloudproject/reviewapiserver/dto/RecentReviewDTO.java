@@ -55,8 +55,7 @@ public class RecentReviewDTO {
     @Builder
     public static class Response {
 
-        private Integer row;
-        private Integer page;
+        private PageDTO pageInfo;
         private List<RecentReviewDTO.Info> reviews;
 
     }
