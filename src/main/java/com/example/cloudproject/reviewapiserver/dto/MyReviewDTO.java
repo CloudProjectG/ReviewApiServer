@@ -60,8 +60,7 @@ public class MyReviewDTO {
     @Builder
     public static class Response {
 
-        private Integer row;
-        private Integer page;
+        private PageDTO pageInfo;
         private List<MyReviewDTO.Info> reviews;
 
     }
