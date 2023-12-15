@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class UserAuthInterceptor implements HandlerInterceptor {
 
-    WebClientUtil webClientUtil;
+    private final WebClientUtil webClientUtil;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
