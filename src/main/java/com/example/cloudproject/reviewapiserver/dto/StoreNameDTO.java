@@ -6,8 +6,8 @@ import java.util.List;
 
 public class StoreNameDTO {
 
-    @Getter
-    @EqualsAndHashCode()
+    @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class Info {
