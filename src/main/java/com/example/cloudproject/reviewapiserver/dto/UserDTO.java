@@ -1,10 +1,13 @@
 package com.example.cloudproject.reviewapiserver.dto;
 
-import lombok.Getter;
+import lombok.*;
 
 public class UserDTO {
 
-    @Getter
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class AuthorizedResponse {
         private Long PK;
         private Boolean isKhu;
