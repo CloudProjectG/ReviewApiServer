@@ -117,6 +117,7 @@ public class ReviewService {
 
         List<Long> storeIdList = reviewList.stream()
                 .map(Review::getStoreId)
+                .distinct()
                 .toList();
 
         Map<Long, String> storeIdNameMap = getStoreIdNameMap(storeIdList);
@@ -144,6 +145,7 @@ public class ReviewService {
 
         List<Long> storeIdList = reviewList.stream()
                 .map(Review::getStoreId)
+                .distinct()
                 .toList();
 
         Map<Long, String> storeIdNameMap = getStoreIdNameMap(storeIdList);
