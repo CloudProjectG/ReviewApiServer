@@ -37,10 +37,10 @@ public class UserAuthInterceptor implements HandlerInterceptor {
 
         UserDTO.AuthorizedResponse authResponse;
 
-        if (token == null || (authResponse = webClientUtil.getUserIdFromToken(token)) == null) {
+        if (token == null || (authResponse = webClientUtil.getUserIdFromToken(token)) == null || !authResponse.getIsKhu()) {
             request.setAttribute("userId", -1L);
         } else {
-            request.setAttribute("userId", authResponse.getId());
+            request.setAttribute("userId", authResponse.getPK());
         }
 
         return true;

@@ -17,6 +17,7 @@ public class UserDTO {
     @AllArgsConstructor
     @Builder
     public static class AuthorizedResponse {
-        private Long id;
+        private Long PK;
+        private Boolean isKhu;
     }
 }
