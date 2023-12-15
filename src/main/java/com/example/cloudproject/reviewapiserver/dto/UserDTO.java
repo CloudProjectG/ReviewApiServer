@@ -8,6 +8,14 @@ public class UserDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+    public static class AuthorizedRequest {
+        private String token;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class AuthorizedResponse {
         private Long id;
     }
