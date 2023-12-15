@@ -24,11 +24,15 @@ public class WebClientUtil {
 
 
     public UserDTO.AuthorizedResponse getUserIdFromToken(String token) {
+        UserDTO.AuthorizedRequest requestDTO = UserDTO.AuthorizedRequest.builder()
+                .token(token)
+                .build();
+
         return webClient.mutate()
                 .baseUrl("http://" + userAuthHostname + "/authorization")
-                .defaultHeaders(headers -> headers.setBearerAuth(token))
                 .build()
                 .post()
+                .bodyValue(requestDTO)
                 .exchangeToMono(response -> {
                     if (response.statusCode() == HttpStatus.OK) {
                         return response.bodyToMono(UserDTO.AuthorizedResponse.class);
