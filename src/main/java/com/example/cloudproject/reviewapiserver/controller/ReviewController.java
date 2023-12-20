@@ -36,7 +36,7 @@ public class ReviewController {
 
     @PostMapping("/{storeId}")
     public ResponseEntity<ReviewDTO.CreateResponse> postReview(@PathVariable("storeId") Long storeId,
-                                                               @ModelAttribute ReviewDTO.CreateRequest requestDTO,
+                                                               @RequestBody ReviewDTO.CreateRequest requestDTO,
                                                                HttpServletRequest servletRequest) {
 
         Long userId = (Long) servletRequest.getAttribute("userId");
@@ -52,7 +52,7 @@ public class ReviewController {
 
     @PatchMapping("/{storeId}")
     public ResponseEntity<ReviewDTO.UpdateResponse> updateReview(@PathVariable("storeId") Long storeId,
-                                                                 @ModelAttribute ReviewDTO.UpdateRequest requestDTO,
+                                                                 @RequestBody ReviewDTO.UpdateRequest requestDTO,
                                                                  HttpServletRequest servletRequest) {
 
         Long userId = (Long) servletRequest.getAttribute("userId");

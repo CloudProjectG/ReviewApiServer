@@ -6,6 +6,7 @@ import com.example.cloudproject.reviewapiserver.exception.ReviewException;
 import com.example.cloudproject.reviewapiserver.exception.type.ReviewExceptionType;
 import com.example.cloudproject.reviewapiserver.repository.ReviewRepository;
 import com.example.cloudproject.reviewapiserver.util.WebClientUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class ReviewService {
     private final ImageService imageService;
     private final WebClientUtil webClientUtil;
 
+    @Transactional
     public StoreReviewDTO.Response getStoreReviews(StoreReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
                 requestDTO.getPage(),
@@ -45,6 +47,7 @@ public class ReviewService {
                 .build();
     }
 
+    @Transactional
     public ReviewDTO.CreateResponse createReview(ReviewDTO.CreateRequest requestDTO) {
         Review review = requestDTO.toEntity();
 
@@ -63,11 +66,15 @@ public class ReviewService {
         return ReviewDTO.CreateResponse.from(review);
     }
 
+    @Transactional
     public ReviewDTO.UpdateResponse updateReview(ReviewDTO.UpdateRequest requestDTO) {
         Review review = requestDTO.toEntity();
         Review.ReviewPK reviewPK = review.getPK();
 
-        UUID beforeImageUuid = reviewRepository.getReferenceById(reviewPK).getImageUuid();
+        Review originReview = reviewRepository.getReferenceById(reviewPK);
+        UUID beforeImageUuid = originReview.getImageUuid();
+
+        review.setCreatedAt(originReview.getCreatedAt());
 
         try {
             reviewRepository.saveAndFlush(review);
@@ -84,6 +91,7 @@ public class ReviewService {
         return ReviewDTO.UpdateResponse.from(review);
     }
 
+    @Transactional
     public ReviewDTO.RemoveResponse removeReview(ReviewDTO.RemoveRequest requestDTO) {
         Review.ReviewPK reviewPK = Review.ReviewPK.builder()
                 .storeId(requestDTO.getStoreId())
@@ -104,6 +112,7 @@ public class ReviewService {
         return ReviewDTO.RemoveResponse.from(review);
     }
 
+    @Transactional
     public MyReviewDTO.Response getMyReviews(MyReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
                 requestDTO.getPage(),
@@ -132,6 +141,7 @@ public class ReviewService {
                 .build();
     }
 
+    @Transactional
     public RecentReviewDTO.Response getRecentReview(RecentReviewDTO.Request requestDTO) {
         Pageable pageable = PageRequest.of(
                 requestDTO.getPage(),
@@ -159,6 +169,7 @@ public class ReviewService {
                 .reviews(recentReviewList)
                 .build();
     }
+
     private void updateTop3HashtagAndAverageGrade(Long storeId) {
         List<Review> reviewList = reviewRepository.findAllByStoreId(storeId);
 
