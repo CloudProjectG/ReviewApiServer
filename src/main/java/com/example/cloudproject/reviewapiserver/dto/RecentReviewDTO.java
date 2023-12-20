@@ -17,7 +17,7 @@ public class RecentReviewDTO {
         private Long storeId;
         private String storeName;
         private Byte grade;
-        private UUID image;
+        private UUID imageUuid;
         private String menu;
         private String comment;
         private List<Integer> hashtags;
@@ -27,7 +27,7 @@ public class RecentReviewDTO {
                     .storeId(review.getStoreId())
                     .storeName(storeName)
                     .grade(review.getGrade())
-                    .image(review.getImageUuid())
+                    .imageUuid(review.getImageUuid())
                     .menu(review.getMenu())
                     .comment(review.getComment())
                     .hashtags(review.getHashtagIdList())
